@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 #access the camera
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Use CAP_DSHOW for Windows to avoid warning messages
 
 if not cam.isOpened():
     print("Error: Could not open camera.")
@@ -23,7 +23,6 @@ while True:
         break
 
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    cv2.imshow("HSV Frame", hsv_frame)
 
     # define lower and upper HSV boundaries for the color blue
     lowerBlue = np.array([100, 150, 50])
@@ -72,12 +71,12 @@ while True:
     puttext = f"Blue Objects: {blueObjectCount}, Red Objects: {redObjectCount}"
     cv2.putText(frame, puttext, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
     cv2.imshow("Camera Frame", frame)
-    cv2.imshow("Blue Mask", blueMask)
-    cv2.imshow("Red Mask", redMask)
 
     # Press 'q' to exit the loop
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+    #exit the loop if the window is closed
+    if cv2.getWindowProperty("Camera Frame", cv2.WND_PROP_VISIBLE) < 1:
+        break
 cam.release()
 cv2.destroyAllWindows()
-
